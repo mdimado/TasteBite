@@ -1,0 +1,56 @@
+# Dependency directories
+/node_modules
+
+# Production build directory
+/build
+
+# Coverage directory
+/coverage
+
+# macOS-specific files
+.DS_Store
+
+# Environment variables file
+.env
+
+# IDE files
+*.idea
+.vscode
+
+# Cache and logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs
+*.log
+
+# Editor files
+*.swp
+*~
+.project
+.idea/
+*.suo
+*.ntvs*
+
+# Jest coverage
+/coverage/
+
+# Next.js build output
+.next/
+out/
+
+# Compiled files
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Temporary files
+*.bak
+*.cache
+*.db
+*.db-shm
+*.db-wal
+*.swp
