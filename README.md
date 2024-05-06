@@ -2,7 +2,11 @@
 
 Welcome to the TateByte Recipes website repository! This project is built using React.js for the frontend, Redux Toolkit for state management, and Firebase for backend services, providing a platform for sharing various dish recipes.
 ![Screenshot 2024-05-06 at 1 49 56 PM-modified](https://github.com/mdimado/TasteBite/assets/123477562/ecedaba1-2d97-4587-9e00-eaeac57b88ce)
-![Uploading Screenshot 2024-05-06 at 1.52.39 PM-modified.png…]()
+<br/>
+![Screenshot 2024-05-06 at 1 51 33 PM-modified](https://github.com/mdimado/TasteBite/assets/123477562/c93b7c1f-1620-432f-b4c8-b518d631d051)
+<br/>
+![Screenshot 2024-05-06 at 1 52 39 PM-modified](https://github.com/mdimado/TasteBite/assets/123477562/e8a9a0a5-b596-4faa-b048-fedc6696f099)
+
 
 ### Getting Started
 
