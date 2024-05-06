@@ -1,70 +1,86 @@
-# Getting Started with Create React App
+### TateByte Recipes Website
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Welcome to the TateByte Recipes website repository! This project is built using React.js for the frontend, Redux Toolkit for state management, and Firebase for backend services, providing a platform for sharing various dish recipes.
 
-## Available Scripts
+### Getting Started
 
-In the project directory, you can run:
+To get started with this project, follow these steps:
 
-### `npm start`
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/mdimado/TasteBite.git
+   cd tatebyte-recipes
+   ```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+2. **Install Dependencies:**
+   ```bash
+   npm install
+   ```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+3. **Set Up Firebase:**
+   - Create a Firebase project at [Firebase Console](https://console.firebase.google.com/).
+   - Obtain your Firebase config credentials.
+   - Add your Firebase config to `src/firebase.config.js`.
 
-### `npm test`
+4. **Start the Development Server:**
+   ```bash
+   npm start
+   ```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+   This will run the React development server. You can view the website at `http://localhost:3000`.
 
-### `npm run build`
+### Folder Structure
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The project folder structure is organized as follows:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **`assets/`**: Contains static assets such as images, icons, or other media used in the project.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **`components/`**: Houses reusable React components used throughout the website, such as `Header`, `RecipeCard`, `RecipeForm`, etc.
 
-### `npm run eject`
+- **`custom-hooks/`**: Holds custom React hooks that encapsulate reusable logic, such as fetching data from Firebase or handling form state.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- **`pages/`**: Contains React components representing different website pages, such as `Home`, `Recipes`, `AddRecipe`, `RecipeDetails`, etc.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **`redux/`**: Includes Redux-related files for state management using Redux Toolkit.
+  - **`reducers/`**: Redux reducers for managing specific slices of state.
+  - **`actions/`**: Action creators for dispatching actions to update state.
+  - **`store.js`**: Configures the Redux store and middleware.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- **`routers/`**: Holds React Router configuration and routing components for navigation within the app.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- **`styles/`**: Contains CSS or SCSS files for styling components and layout.
 
-## Learn More
+- **`App.css`**: Global CSS file for styling the main application layout.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- **`App.js`**: Main component where routing and layout structure are defined. This component likely renders other components based on the current route.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- **`firebase.config.js`**: Configuration file for Firebase, including initialization and Firebase project settings.
 
-### Code Splitting
+- **`index.js`**: Entry point of the React application, where the React app is rendered into the HTML root element (`<div id="root"></div>`).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Available Scripts
 
-### Analyzing the Bundle Size
+In the project directory, you can run the following scripts:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- **`npm start`**: Runs the app in development mode.
+- **`npm test`**: Launches the test runner in interactive watch mode.
+- **`npm run build`**: Builds the app for production to the `build` folder.
 
-### Making a Progressive Web App
+### Additional Topics
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Explore these related topics to understand more about this project:
 
-### Advanced Configuration
+- React and Redux Toolkit for managing complex state in a recipe-sharing application.
+- Firebase Firestore for storing recipe data and user authentication.
+- Integrating Firebase Storage for recipe images.
+- CSS or SCSS styling techniques for creating an appealing recipe website.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Learn More
 
-### Deployment
+For more information about the technologies used in this project, refer to the following documentation:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- [React.js Documentation](https://reactjs.org/docs/getting-started.html)
+- [Redux Toolkit Documentation](https://redux-toolkit.js.org/)
+- [Firebase Documentation](https://firebase.google.com/docs)
 
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Feel free to reach out with any questions or issues related to this project. Enjoy building your recipe-sharing platform!
