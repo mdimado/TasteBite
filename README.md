@@ -9,7 +9,7 @@ To get started with this project, follow these steps:
 1. **Clone the Repository:**
    ```bash
    git clone https://github.com/mdimado/TasteBite.git
-   cd tatebyte-recipes
+   cd TasteBite
    ```
 
 2. **Install Dependencies:**
