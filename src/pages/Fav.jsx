@@ -1,10 +1,12 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import '../styles/cart.css';
+import { Link } from "react-router-dom";
+import '../styles/cart.css'
 import { motion } from "framer-motion";
 import { favActions } from "../redux/slices/favSlice";
 import { cartActions } from "../redux/slices/cartSlice";
 import { Container, Row, Col } from "reactstrap";
+import CommonSection from "../components/UI/CommonSection";
 import Helmet from "../components/Helmet/Helmet";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { toast } from "react-toastify";
@@ -20,6 +22,15 @@ const Fav = () => {
   const [itemToDelete, setItemToDelete] = React.useState(null);
   const [itemToMoveToCart, setItemToMoveToCart] = React.useState(null);
   const [isMoveToCartModalOpen, setMoveToCartModalOpen] = React.useState(false);
+
+  const deleteItem = (itemId) => {
+    dispatch(favActions.deleteItem(itemId));
+  };
+
+  const moveItemToCart = (item) => {
+    setItemToMoveToCart(item);
+    setMoveToCartModalOpen(true);
+  };
 
   const deleteFavItem = (itemId) => {
     setItemToDelete(itemId);
@@ -45,34 +56,44 @@ const Fav = () => {
 
   return (
     <Helmet title="Favorites">
-      <Container>
-        <Row>
-          <Col className='fav-items' lg="12">
-          <div> <h1>Favourites</h1></div>
-            {favItems.length === 0 ? (
-              <div className="justify favbox">
-                <h2 className="fs-4 text-center">
-                  Nothing seems to be here <i className="ri-emotion-sad-line"></i>
-                </h2>
-                <p className="text-center mt-5">
-                  Create a curated collection of your most cherished finds and
-                  let them dance in the realm of your favorites.
-                </p>
-              </div>
-            ) : (
-              <section className='favorites'>
-                {favItems.map((item, index) => (
-                  <FavItem
-                    item={item}
-                    key={index}
-                    deleteFavItem={deleteFavItem}
-                  />
-                ))}
-              </section>
-            )}
-          </Col>
-        </Row>
-      </Container>
+      
+      <section>
+        <Container>
+          <Row>
+            <Col className='fav-items' lg="12">
+            <div> <h1>Favourites</h1></div>
+              {favItems.length === 0 ? (
+                <div className="justify favbox">
+                  <h2 className="fs-4 text-center">
+                    Nothing seems to be here{" "}
+                    <i className="ri-emotion-sad-line"></i>
+                  </h2>
+                  <p className="text-center mt-5">
+                    Create a curated collection of your most cherished finds and
+                    let them dance in the realm of your favorites.
+                  </p>
+                  <Link to="/recipes" className="buy__button button_cs ">
+                    Continue Shopping
+                  </Link>
+                </div>
+              ) : (
+                <section className='favorites'>
+                  
+                 
+                  {favItems.map((item, index) => (
+                    <FavItem
+                      item={item}
+                      key={index}
+                      deleteFavItem={deleteFavItem}
+                      moveItemToCart={moveItemToCart}
+                    />
+                  ))}
+                </section>
+              )}
+            </Col>
+          </Row>
+        </Container>
+      </section>
       {itemToDelete && (
         <Modal isOpen={isDeleteModalOpen} toggle={() => setDeleteModalOpen(false)}>
           <ModalHeader toggle={() => setDeleteModalOpen(false)}>
@@ -82,7 +103,7 @@ const Fav = () => {
             Are you sure you want to remove the item from your favorites?
           </ModalBody>
           <ModalFooter>
-            <button className="buy__button btn-danger" onClick={handleDeleteConfirmation}>
+            <button className="buy__button btn-move-to-fav-cancel btn-danger" onClick={handleDeleteConfirmation}>
               Yes, Remove
             </button>
             <button className="buy__button btn-secondary" onClick={() => setDeleteModalOpen(false)}>
@@ -100,10 +121,10 @@ const Fav = () => {
             Are you sure you want to move the item to your cart?
           </ModalBody>
           <ModalFooter>
-            <button className="buy__button" onClick={handleMoveToCartConfirmation}>
+            <button className="buy__button btn-move-to-fav" onClick={handleMoveToCartConfirmation}>
               Yes, Move to Cart
             </button>
-            <button className="buy__button btn-secondary" onClick={() => setMoveToCartModalOpen(false)}>
+            <button className="buy__button btn-move-to-fav-cancel btn-secondary" onClick={() => setMoveToCartModalOpen(false)}>
               Cancel
             </button>
           </ModalFooter>
@@ -113,23 +134,27 @@ const Fav = () => {
   );
 };
 
-const FavItem = ({ item, deleteFavItem }) => {
+const FavItem = ({ item, deleteFavItem, moveItemToCart }) => {
   return (
     <div className="fav-item">
       <div className="gridding">
         <div className="fav-item-image">
-          <img src={item.imgUrl} alt={item.title} />
+          <Link to={`/recipes/${item.id}`}>
+            <img src={item.imgUrl} alt="" />
+          </Link>
         </div>
         <div className="fav-item-title">
-          {item.title}
+          <Link to={`/recipes/${item.id}`}>{item.title}</Link>
         </div>
         <div className="fav-item-details">
+          <div></div>
           <div className="fav-item-actions">
             <motion.i
               whileTap={{ scale: 1.2 }}
               onClick={() => deleteFavItem(item.id)}
               className="ri-delete-bin-line"
             ></motion.i>
+           
           </div>
         </div>
       </div>

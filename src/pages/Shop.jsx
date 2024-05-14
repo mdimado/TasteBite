@@ -6,9 +6,9 @@ import "../styles/shop.css";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase.config";
 import ProductsList from "../components/UI/ProductsList";
-import AudioPlayer from 'react-h5-audio-player';
+import { motion } from "framer-motion";
 
-const Shop = ({ category }) => {
+const Shop = () => {
   const [productsData, setProductsData] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -19,87 +19,91 @@ const Shop = ({ category }) => {
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
   const [selectedSort, setSelectedSort] = useState("");
   const readCountRef = useRef(0);
-  const [currentSong, setCurrentSong] = useState(null);
-
-  const handlePlaySong = (song) => {
-    setCurrentSong(song);
-  };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     fetchProducts();
-  }, [category]);
+  }, []);
 
   const fetchProducts = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "songs"));
+      readCountRef.current += 1;
+      console.log("Number of Firestore reads:", readCountRef.current);
+
+      const querySnapshot = await getDocs(collection(db, "recipes"));
       const products = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-
-      // Filter products by selected category
-      const filtered = category
-        ? products.filter((item) => item.category === category)
-        : products;
-
-      setProductsData(filtered);
-      setFilteredProducts(filtered);
+      setProductsData(products);
+      setFilteredProducts(products);
+      setSearchTerm("");
       setIsLoading(false);
+
+      setTimeout(() => {
+        setIsLoading(true);
+      }, 10000);
     } catch (error) {
       console.log("Error fetching products: ", error);
     }
   };
 
   const handleSearch = (e) => {
-    const term = e.target.value;
-    setSearchTerm(term);  // set the search term
+    console.log("Search term:", e.target.value);
+    const searchTerm = e.target.value.toLowerCase();
+    setSearchTerm(searchTerm);
+    applyFilters(selectedCategory, selectedSubCategory, selectedSort, searchTerm);
   };
   
-  // Effect hook to handle filter updates after search term changes
-  useEffect(() => {
-    applyFilters();
-  }, [searchTerm, selectedCategory, selectedSubCategory, selectedSort]);  // Run whenever any filter criteria changes
   
   
   
-  
-  
-  const applyFilters = () => {
+  const applyFilters = (category, subCategory, sort, term) => {
     console.log("Applying filters...");
-    let filtered = productsData;
+    let filteredProducts = productsData;
   
-    // Category filter
-    if (selectedCategory) {
-      console.log("Filtering by category:", selectedCategory);
-      filtered = filtered.filter(item => item.category === selectedCategory);
+
+    if (category !== "") {
+      console.log("Filtering by category:", category);
+      filteredProducts = filteredProducts.filter((item) => item.category === category);
     }
   
-    // Subcategory filter
-    if (selectedSubCategory) {
-      console.log("Filtering by subcategory:", selectedSubCategory);
-      filtered = filtered.filter(item => item.subCategory === selectedSubCategory);
+
+    if (subCategory !== "") {
+      console.log("Filtering by subcategory:", subCategory);
+      filteredProducts = filteredProducts.filter((item) => item.subCategory === subCategory);
     }
   
-    // Sorting
-    if (selectedSort === "price-low-high") {
-      filtered.sort((a, b) => a.price - b.price);
-    } else if (selectedSort === "price-high-low") {
-      filtered.sort((a, b) => b.price - a.price);
+
+    if (sort === "price-low-high") {
+      console.log("Sorting by price (low to high)");
+      filteredProducts.sort((a, b) => a.price - b.price);
+    } else if (sort === "price-high-low") {
+      console.log("Sorting by price (high to low)");
+      filteredProducts.sort((a, b) => b.price - a.price);
     }
   
-    // Search term filter
-    if (searchTerm) {
-      console.log("Filtering by search term:", searchTerm);
-      filtered = filtered.filter(item => {
+    if (term !== "") {
+      console.log("Filtering by search term:", term);
+      const searchTermLower = term.toLowerCase();
+      filteredProducts = filteredProducts.filter((item) => {
         const titleLower = item.title.toLowerCase();
-        return titleLower.includes(searchTerm.toLowerCase());
+        const categoriesLower = item.categories.map(category => category.toLowerCase());
+        const ingredLower = item.ingredients.map(ingredient => ingredient.toLowerCase());
+    
+        return (
+          titleLower.includes(searchTermLower) ||
+          categoriesLower.some(category => category.includes(searchTermLower)) ||
+          ingredLower.some(ingredient => ingredient.includes(searchTermLower))
+        );
       });
     }
+    
+    
   
-    console.log("Filtered products:", filtered);
-    setFilteredProducts(filtered);
+    console.log("Filtered products:", filteredProducts);
+    setFilteredProducts(filteredProducts);
   };
-  
   
   
 
@@ -110,8 +114,8 @@ const Shop = ({ category }) => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <Helmet title="Songs">
-      <CommonSection title="Songs" hideOnMobile={true}/>
+    <Helmet title="Shop">
+      <CommonSection title="Recipes" hideOnMobile={true}/>
 
       <section className="stick-section">
         <Container>
@@ -120,7 +124,7 @@ const Shop = ({ category }) => {
               <div className="search__box">
                 <input
                   type="text"
-                  placeholder="Search Song ..."
+                  placeholder="Search Product ..."
                   onChange={handleSearch}
                   value={searchTerm}
                 />
@@ -140,7 +144,7 @@ const Shop = ({ category }) => {
               </div>
             ) : (
               <>
-                <ProductsList data={currentProducts}  onPlaySong={handlePlaySong}/>
+                <ProductsList data={currentProducts} />
                 <Pagination
                   productsPerPage={productsPerPage}
                   totalProducts={filteredProducts.length}
@@ -151,26 +155,7 @@ const Shop = ({ category }) => {
             )}
           </Row>
         </Container>
-        <div className="nowplaying">
-          {currentSong && (
-            <>
-            <div className="player"><div className="imageplayer">
-              <img src={currentSong.imgUrl} alt="" />
-              </div>
-              <div className="playerrrr">
-              <p>{currentSong.title}</p>
-            <AudioPlayer
-              autoPlay
-              src={currentSong.songUrl}
-              onPlay={e => console.log("onPlay")}
-              // other props here
-            />
-                </div></div>
-           </>
-          )}
-        </div>
       </section>
-
 
     </Helmet>
   );

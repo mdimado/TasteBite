@@ -6,37 +6,36 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const RecipeUploadForm = () => {
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("");
-  const [artist, setArtist] = useState("");
-  const [song, setSong] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [instructions, setInstructions] = useState("");
+  const [ingredients, setIngredients] = useState("");
   const [image, setImage] = useState(null);
+  const [vegetarian, setVegetarian] = useState(false);
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     const checkRecipeCollection = async () => {
       try {
-        const recipesRef = collection(db, "songs");
+        const recipesRef = collection(db, "recipes");
         const snapshot = await getDocs(recipesRef);
         if (snapshot.size === 0) {
           await addDoc(recipesRef, { exists: true });
         }
       } catch (error) {
-        console.error("Error checking songs collection:", error);
+        console.error("Error checking recipes collection:", error);
       }
     };
 
     checkRecipeCollection();
   }, []);
 
+  const handleCategoryChange = (e) => {
+    setCategories(e.target.value.split(",").map(category => category.trim()));
+  };
+
   const handleImageChange = (e) => {
     if (e.target.files[0]) {
       setImage(e.target.files[0]);
-    }
-  };
-
-  const handleSongChange = (e) => {
-    if (e.target.files[0]) {
-      setSong(e.target.files[0]);
     }
   };
 
@@ -45,55 +44,43 @@ const RecipeUploadForm = () => {
     setUploading(true);
 
     try {
-      const storageRef = ref(storage, `song_images/${image.name}`);
+      const storageRef = ref(storage, `recipe_images/${image.name}`);
       await uploadBytes(storageRef, image);
+
       const imageUrl = await getDownloadURL(storageRef);
 
-      const storageRef2 = ref(storage, `songs/${song.name}`);
-      await uploadBytes(storageRef2, song);
-      const songUrl = await getDownloadURL(storageRef2);
-
-      const songData = {
+      const recipe = {
         title,
-        category,
-        artist,
+        categories,
+        instructions,
+        ingredients: ingredients.split(",").map((ingredient) => ingredient.trim()),
         imgUrl: imageUrl,
-        songUrl: songUrl,
+        vegetarian,
       };
 
-      await setDoc(doc(db, "songs", title), songData);
+      await setDoc(doc(db, "recipes", title), recipe);
 
       setTitle("");
-      setCategory("");
-      setArtist("");
+      setCategories([]);
+      setInstructions("");
+      setIngredients("");
       setImage(null);
-      setSong(null);
+      setVegetarian(false); 
 
-      alert("Song uploaded successfully!");
+      alert("Recipe uploaded successfully!");
     } catch (error) {
-      console.error("Error uploading song:", error);
-      alert("An error occurred while uploading the song. Please try again.");
+      console.error("Error uploading recipe:", error);
+      alert("An error occurred while uploading the recipe. Please try again.");
     } finally {
       setUploading(false);
     }
   };
 
-  // Define your category options
-  const categoryOptions = [
-    "Pop",
-    "Rock",
-    "Hip-Hop/Rap",
-    "Electronic/Dance",
-    "R&B/Soul",
-    "Classical",
-    // Add more options as needed
-  ];
-
   return (
     <Container>
       <Row>
         <Col md={{ size: 8, offset: 2 }}>
-          <h2 className="mt-5 mb-4">Upload Song</h2>
+          <h2 className="mt-5 mb-4">Upload Recipe</h2>
           <Form onSubmit={handleSubmit}>
             <FormGroup>
               <Label for="title">Title</Label>
@@ -107,33 +94,42 @@ const RecipeUploadForm = () => {
               />
             </FormGroup>
             <FormGroup>
-              <Label for="category">Category</Label>
-              <Input
-                type="select"
-                name="category"
-                id="category"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                required
-              >
-                <option value="">Select a category...</option>
-                {categoryOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </Input>
-            </FormGroup>
-            <FormGroup>
-              <Label for="artist">Artist</Label>
+              <Label for="categories">Categories (Separated by Commas)</Label>
               <Input
                 type="text"
-                name="artist"
-                id="artist"
-                value={artist}
-                onChange={(e) => setArtist(e.target.value)}
+                name="categories"
+                id="categories"
+                value={categories.join(", ")}
+                onChange={handleCategoryChange}
                 required
               />
+            </FormGroup>
+            <FormGroup>
+              <Label for="instructions">Instructions</Label>
+              <Input
+                type="textarea"
+                name="instructions"
+                id="instructions"
+                value={instructions}
+                onChange={(e) => setInstructions(e.target.value)}
+                required
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="ingredients">Ingredients (Separated by Commas)</Label>
+              <Input
+                type="text"
+                name="ingredients"
+                id="ingredients"
+                value={ingredients}
+                onChange={(e) => setIngredients(e.target.value)}
+                required
+              />
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input type="checkbox" onChange={() => setVegetarian(!vegetarian)} checked={vegetarian} /> Vegetarian
+              </Label>
             </FormGroup>
             <FormGroup>
               <Label for="image">Image</Label>
@@ -146,19 +142,8 @@ const RecipeUploadForm = () => {
                 required
               />
             </FormGroup>
-            <FormGroup>
-              <Label for="song">Song</Label>
-              <Input
-                type="file"
-                name="song"
-                id="song"
-                accept="audio/mpeg"
-                onChange={handleSongChange}
-                required
-              />
-            </FormGroup>
             <Button type="submit" color="primary" disabled={uploading}>
-              {uploading ? "Uploading..." : "Upload Song"}
+              {uploading ? "Uploading..." : "Upload Recipe"}
             </Button>
           </Form>
         </Col>
