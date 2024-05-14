@@ -1,14 +1,12 @@
 import React from "react";
 import ProductCard from "./ProductCard";
 
-const ProductsList = ({data}) => {
-  
+const ProductsList = ({ data, onPlaySong }) => {
   return (
     <>
-    {data?.map((item, index)=>(
-        <ProductCard item={item} key={index}/>
-    ))}
-        
+      {data?.map((item, index) => (
+        <ProductCard item={item} key={item.id || index} onPlaySong={onPlaySong} />
+      ))}
     </>
   );
 };

@@ -1,18 +1,9 @@
 
 
 .header{
-    width: 100%;
-    height: 70px;
-    line-height: 70px;
-    backdrop-filter: blur( 14px );
-    -webkit-backdrop-filter: blur( 4px );
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
-    z-index: 999;
-    position: sticky;
-    top: 0;
-    left: 0;
-    margin-top: 0px !important ;
-
+    display: flex;
+    flex-direction: column;
+   
 }
 
 .header0{
@@ -21,9 +12,10 @@
 
 .nav__wrapper{
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    margin-top: 0px !important;
+    margin-top: 30px !important;
 
 }
 
@@ -38,25 +30,91 @@
     height: 5rem;
 }
 
+.profile img{
+    margin-right: 10px;
+}
+
 .menu{
     display: flex;
+    flex-direction: column;
     align-items: center;
-    column-gap: 2.7rem;
     margin-bottom: 0;
+    padding: 0px;
+    margin-top: 50px;
+}
+
+.menu ul{
+    margin: 30s0px 0px;
 }
 
 .nav__item a{
-    color: black;
+    color: rgb(255, 255, 255);
     font-weight: 500;
     cursor: pointer;
+    margin-top: 100px;
+    width: 100px;
+    text-align: left;
 
+}
+
+.nav__item{
+    margin: 10px 0px;
+}
+
+.auth-links{
+    display: flex;
+    flex-direction: column;
+
+}
+
+.auth-links a{
+    background: rgba( 255, 255, 255, 0.25 );
+box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+
+border-radius: 10px;
+border: 1px solid rgba( 255, 255, 255, 0.18 );
+text-decoration: none;
+padding: 8px 12px;
+margin-top: 20px;
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+.auth-links a:hover{
+    color: #000;
 }
 
 .nav__icons{
     display: flex;
+    flex-direction: column;
     align-items: center;
     column-gap: 1.2rem;
+    bottom: 0%;
+    margin-top: 100px;
+    margin-bottom: 150px;
 
+}
+
+.fav__icon p{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+
+border-radius: 10px;
+border: 1px solid rgba( 255, 255, 255, 0.18 );
+padding: 8px 12px;
+margin-bottom: 20px;
+cursor: pointer;
+
+}
+
+
+.fav__icon i{
+    margin-left: 5px;
+    color: #ffffff !important;
 }
 
 .nav__icons span i{
@@ -125,6 +183,10 @@
     border-radius: 10px;
 }
 
+.profile{
+    display: flex;
+    flex-direction: row;
+}
 
 
 .show__profileActions{
@@ -139,7 +201,15 @@
 
 .nav__active{
     font-weight: 700 !important;
-    color: var(--primary-color) !important;
+    color: #fff !important;
+    background: rgba( 255, 255, 255, 0.25 );
+box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+
+border-radius: 10px;
+border: 1px solid rgba( 255, 255, 255, 0.18 );
+padding: 8px 12px;
+width: 100px;
+    text-align: left;
     
 }
 

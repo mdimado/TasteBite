@@ -4,6 +4,10 @@
   margin-top: 20px;
 }
 
+.audioplayer{
+  width: 80%;
+}
+
 .favorites {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));

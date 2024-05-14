@@ -6,12 +6,10 @@
 
 }
 
-.grey{
-    border-radius: 12px;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-    background-color: #fff;
-    margin: 30px 30px;
-    height: 800px;
+
+
+img{
+  border-radius: 15px !important;
 }
 
 
@@ -45,6 +43,49 @@
     background: var(--primary-color);
     color: #fff;
     border-radius: 50px;
+}
+
+
+/* product-card.css */
+
+.product__item {
+  position: relative; /* Ensure relative positioning for absolute child elements */
+}
+
+.recipe__img {
+  position: relative;
+  overflow: hidden;
+}
+
+img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.play__button {
+  position: absolute;
+  top: 85%;
+  left: 75%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  border-radius: 50%;
+  padding: 20px;
+  transition: opacity 0.3s ease;
+  opacity: 0; /* Initially hide the button */
+}
+
+.play__button i {
+  color: rgb(243, 88, 88);
+  font-size: 2.5rem;
+  border: 2px solid #fff;
+  border-radius: 9999px;
+}
+
+/* Show play button when hovered over the image or when audio is playing */
+.recipe__img:hover .play__button,
+.play__button.play {
+  opacity: 1;
 }
 
 
@@ -93,7 +134,11 @@
     align-items: center;
     width: 100%;
     justify-content: space-between;
-    margin-top: 20px;
+    margin-bottom: 15px;
+  }
+
+  .flexend p{
+    margin-left: 10px;
   }
   
   .product__name{
@@ -105,14 +150,14 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: #fe5f4a;
+    background-color: #ff1e00;
     width: auto;
     padding: 5px 10px;
     border-radius: 9999px;
     cursor: pointer;
     color: #fff;
     transition: 0.4s;
-    border: 1px solid #fe5f4a;
+    border: 1px solid #ff1e00;
   }
 
   .categories{

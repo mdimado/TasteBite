@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "reactstrap";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { db } from "../firebase.config";
+import { doc, getDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 import Helmet from "../components/Helmet/Helmet";
 import CommonSection from "../components/UI/CommonSection";
-import { toast } from "react-toastify";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { db } from "../firebase.config";
-import { doc, getDoc, collection, query, where, getDocs, updateDoc } from "firebase/firestore";
-import dellog from '../assets/images/dellog.png';
-import { useNavigate } from "react-router-dom";
+import ReactAudioPlayer from "react-h5-audio-player";
+import "react-h5-audio-player/lib/styles.css";
 import "../styles/product-details.css";
 import ProductsLis from "../components/UI/ProductsLis";
-import useAuth from "../custom-hooks/useAuth"
-import { setDoc } from "firebase/firestore";
+import useAuth from "../custom-hooks/useAuth";
+import { updateDoc } from "firebase/firestore";
 import { useDispatch } from "react-redux";
 import { favActions } from "../redux/slices/favSlice";
 
@@ -23,25 +21,27 @@ const ProductDetails = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { currentUser } = useAuth();
-  const [recipe, setRecipe] = useState(null);
+  const [song, setSong] = useState(null);
   const [loading, setLoading] = useState(true);
   const [otherRecipes, setOtherRecipes] = useState([]);
   const [rating, setRating] = useState(0);
   const [numReviews, setNumReviews] = useState(0);
   const [userRated, setUserRated] = useState(false);
   const [userRating, setUserRating] = useState(0);
-  const [hoverRating, setHoverRating] = useState(0); 
-  useEffect(() => {
-    const fetchRecipe = async () => {
-      try {
-        const recipeRef = doc(db, "recipes", id);
-        const recipeSnap = await getDoc(recipeRef);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
 
-        if (recipeSnap.exists()) {
-          const recipeData = recipeSnap.data();
-          setRecipe(recipeData);
-          setRating(recipeData.rating || 0);
-          setNumReviews(recipeData.numReviews || 0);
+  useEffect(() => {
+    const fetchSong = async () => {
+      try {
+        const songRef = doc(db, "songs", id);
+        const songSnap = await getDoc(songRef);
+
+        if (songSnap.exists()) {
+          const songData = songSnap.data();
+          setSong(songData);
+          setRating(songData.rating || 0);
+          setNumReviews(songData.numReviews || 0);
 
           if (currentUser) {
             const userRatedRef = doc(db, "user_ratings", `${id}_${currentUser.uid}`);
@@ -52,95 +52,51 @@ const ProductDetails = () => {
             }
           }
 
-          const category = recipeData.categories[0];
-          const recipesRef = collection(db, "recipes");
-          const q = query(recipesRef, where("categories", "array-contains", category));
-          const querySnapshot = await getDocs(q);
-          const otherRecipesData = [];
-          querySnapshot.forEach((doc) => {
-            if (doc.id !== id) {
-              otherRecipesData.push({ id: doc.id, ...doc.data() });
-            }
-          });
-          setOtherRecipes(otherRecipesData);
+          setLoading(false);
         } else {
-          toast.error("Recipe not found");
-          navigate('/');
+          toast.error("Song not found");
+          navigate("/");
         }
       } catch (error) {
-        console.error("Error fetching recipe:", error);
-        toast.error("An error occurred while fetching the recipe");
-        navigate('/');
-      } finally {
-        setLoading(false);
+        console.error("Error fetching song:", error);
+        toast.error("An error occurred while fetching the song");
+        navigate("/");
       }
     };
 
-    fetchRecipe();
+    fetchSong();
   }, [id, navigate, currentUser]);
 
   const handleRating = async (newRating) => {
     try {
       if (!currentUser) {
-        toast.error("Please log in to rate the recipe.");
+        toast.error("Please log in to rate the song.");
         return;
       }
 
       if (userRated) {
-        toast.error("You have already rated this recipe.");
+        toast.error("You have already rated this song.");
         return;
       }
 
       const userRatedRef = doc(db, "user_ratings", `${id}_${currentUser.uid}`);
-      await setDoc(userRatedRef, { rating: newRating });
+      await updateDoc(userRatedRef, { rating: newRating });
 
       const updatedRating = (rating * numReviews + newRating) / (numReviews + 1);
-      const recipeRef = doc(db, "recipes", id);
-      await updateDoc(recipeRef, { rating: updatedRating, numReviews: numReviews + 1 });
+      const songRef = doc(db, "songs", id);
+      await updateDoc(songRef, { rating: updatedRating, numReviews: numReviews + 1 });
+
       setRating(updatedRating);
       setNumReviews(numReviews + 1);
       setUserRated(true);
       setUserRating(newRating);
 
-      toast.success("Thank you for rating this recipe!");
+      toast.success("Thank you for rating this song!");
     } catch (error) {
       console.error("Error updating rating:", error);
       toast.error("An error occurred while updating the rating");
     }
   };
-
-  const handleMouseEnter = (index) => {
-    setHoverRating(index + 1);
-  };
-
-  const handleMouseLeave = () => {
-    setHoverRating(0);
-  };
-
-  const handleAddToFavorites = () => {
-    if (!recipe) return;
-
-    dispatch(favActions.addItem(recipe));
-    toast.success("Recipe added to favorites!");
-  };
-
-  if (loading) {
-    return (
-      <div className="fullload">
-        <div class="loader"></div> 
-      </div>
-    );
-  }
-
-  if (!recipe) {
-    return <div>Recipe not found</div>;
-  }
-
-  const { title, categories, instructions, ingredients, imgUrl } = recipe;
-
-  const instructionListItems = instructions.split('\n').map((instruction, index) => (
-    <li key={index}>{instruction}</li>
-  ));
 
   const starIcons = [];
   const roundedRating = Math.round(rating);
@@ -159,60 +115,79 @@ const ProductDetails = () => {
       <i
         key={i}
         className={i < hoverRating ? "ri-star-fill" : "ri-star-line"}
-        onMouseEnter={() => handleMouseEnter(i)}
-        onMouseLeave={handleMouseLeave}
+        onMouseEnter={() => setHoverRating(i + 1)}
+        onMouseLeave={() => setHoverRating(0)}
         onClick={() => handleRating(i + 1)}
       />
     );
   }
 
+  const handleAddToFavorites = () => {
+    if (!song) return;
+
+    dispatch(favActions.addItem(song));
+    toast.success("Song added to favorites!");
+  };
+
+  if (loading) {
+    return (
+      <div className="fullload">
+        <div className="loader"></div>
+      </div>
+    );
+  }
+
+  if (!song) {
+    return <div>Song not found</div>;
+  }
+
+  const { title, imgUrl } = song;
+
   return (
     <Helmet title={title}>
-      <CommonSection className='commsect' title={title} hideOnMobile={true}/>
+      <CommonSection className="commsect" title={title} hideOnMobile={true} />
 
       <section className="pt-0">
         <Container>
           <Row className="space">
             <Col className="padddd" lg="9">
-             <div className="image">
-              <img src={imgUrl} alt={title} />
-             </div>
-             <div className="context">
-              <h1 className="recipe_title">{title}</h1>
-              <div className="categories">
-                {categories.map((cat, index) => (
-                  <h3 key={index}>{cat}</h3>
-                ))}
+              <div className="image">
+                <img src={imgUrl} alt={title} />
               </div>
-              <div className="rating">
-                {starIcons}
-                <span>({numReviews} Reviews)</span>
+              <div className="context">
+                <h1 className="recipe_title">{title}</h1>
+                <div className="mt-4 island">
+                  <h4>Listen to the Song:</h4>
+                  <ReactAudioPlayer
+                    src={song.songUrl} // Assuming `songUrl` is the MP3 URL
+                    autoPlay={false}
+                    controls
+                    className="audio-player"
+                    playing={isPlaying}
+                    onPlay={() => setIsPlaying(true)}
+                    onPause={() => setIsPlaying(false)}
+                  />
+                </div>
+                <div className="rating">
+                  {starIcons}
+                  <span>({numReviews} Reviews)</span>
+                </div>
               </div>
-              <ol className="ollo">{instructionListItems}</ol>
-             </div>
             </Col>
-            <Col lg='3'>
-              <div className="island">
-                <h4>Ingredients</h4>
-                {ingredients.map((ingredient, index) => (
-                  <p key={index}><input type="checkbox" /> {ingredient}</p>
-                ))}
-              </div>
+            <Col lg="3">
               <div className="mt-4 island">
                 {currentUser && !userRated && (
                   <div className="rate-recipe">
-                    <h4>Rate this Recipe:</h4>
-                    <div className="rate-recipe-stars">
-                      {rateRecipeStars}
-                    </div>
+                    <h4>Rate this Song:</h4>
+                    <div className="rate-recipe-stars">{rateRecipeStars}</div>
                   </div>
                 )}
+                <button onClick={handleAddToFavorites}>Add to Favorites</button>
               </div>
               <div className="mt-5 islanno island">
-                <h4>Other Recipes:</h4>
+                <h4>Other Songs:</h4>
                 <ProductsLis data={otherRecipes} />
               </div>
-             
             </Col>
           </Row>
         </Container>

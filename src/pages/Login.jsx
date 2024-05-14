@@ -67,16 +67,15 @@ const Login = () => {
               </Col>
             ) : (
               <Row>
-                <Col className="dffdddf" lg ='6'>
-                  <img className="loginimg" src={imag} alt="" />
-                </Col>
+                
               <Col lg='6' className="m-auto text-center">
                 <h3 className="fw-bold fs-2 mb-4">Welcome Back!</h3>
                 <h6 className="mb-4">Login to continue</h6>
 
                 <Form className="auth__form" onSubmit={signInWithEmail}>
-                  <button type="button" className="buy__button auth__btn google_btn " onClick={handleGoogleLogin}><img src={googleimg} alt="" /> Login with Google</button><p className="OR">OR</p>
-                  <FormGroup className="form__group">
+                  <div className="gogbtn"><button type="button" className="buy__button auth__btn google_btn " onClick={handleGoogleLogin}><img src={googleimg} alt="" /> Login with Google</button><p className="OR">OR</p>
+                 </div>
+                   <FormGroup className="form__group">
                     <input type="email" placeholder="E-mail" value={email} onChange={e => setEmail(e.target.value)} />
                   </FormGroup>
                   <FormGroup className="form__group">
@@ -85,6 +84,7 @@ const Login = () => {
 
                   <button type="submit" className="buy__button auth__btn">Let's go</button>
                   <p>Don't have an account? <Link to='/signup'>Sign Up</Link></p>
+                  <p>Login as an admin <Link to='/admin'>Click here</Link></p>
                 </Form>
               </Col></Row>
             )}

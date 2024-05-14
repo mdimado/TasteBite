@@ -12,12 +12,13 @@ import { getAnalytics } from "firebase/analytics";
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDnd0kXbunyDhSgOomasdpQ_bsME52TPuA",
-  authDomain: "tastebyte-17944.firebaseapp.com",
-  projectId: "tastebyte-17944",
-  storageBucket: "tastebyte-17944.appspot.com",
-  messagingSenderId: "224846271865",
-  appId: "1:224846271865:web:85dc9fc3a8097678b2cba8"
+ 
+  apiKey: "AIzaSyDSePWIC3vjKXwUYKuSpk01vSu6nNBVhNY",
+  authDomain: "spotify-clone-5ab74.firebaseapp.com",
+  projectId: "spotify-clone-5ab74",
+  storageBucket: "spotify-clone-5ab74.appspot.com",
+  messagingSenderId: "607253520689",
+  appId: "1:607253520689:web:cce297a85fdafa9c2b9010"
 };
 
 

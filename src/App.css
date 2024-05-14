@@ -24,9 +24,12 @@
 
 body {
   font-family: "Montserrat", sans-serif;
-  background-color: #FEF6E4;
+  background-color: #B82727;
 }
-
+Label,
+tr,
+th,
+td,
 h1,
 h2,
 h3,
@@ -36,7 +39,7 @@ h6,
 p {
   padding: 0;
   margin: 0;
-  color: #011958 !important;
+  color: #fff !important;
 }
 
 p {
@@ -99,6 +102,29 @@ section{
 	width: 100%;
 	padding: 11px 15px 11px 0;
 }
+
+.modal-content{
+  background-color: #333 !important;
+}
+
+.imgss{
+  height: 70px;
+  width: auto;
+}
+
+/* App.css */
+
+.now-playing {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+}
+
 
 
 @media only screen and (max-width:768px){
